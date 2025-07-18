@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Goal {
+  id             String            @id @default(cuid())
+  title          String
+  description    String
+  why            String
+  timeline       String
+  percentComplete Int              @default(0)
+  tags           String // comma-separated list or JSON string
+  deliverables   Deliverable[]
+  actions        SupportingAction[]
+  logs           ActionLog[]
+  createdAt      DateTime          @default(now())
+}
+
+model Deliverable {
+  id     String @id @default(cuid())
+  name   String
+  link   String?
+  isDone Boolean @default(false)
+  goal   Goal   @relation(fields: [goalId], references: [id])
+  goalId String
+}
+
+model SupportingAction {
+  id         String @id @default(cuid())
+  text       String
+  isComplete Boolean @default(false)
+  goal       Goal   @relation(fields: [goalId], references: [id])
+  goalId     String
+}
+
+model ActionLog {
+  id        String   @id @default(cuid())
+  text      String
+  timestamp DateTime @default(now())
+  goal      Goal     @relation(fields: [goalId], references: [id])
+  goalId    String
+}
