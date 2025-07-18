@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 const handler = createMcpHandler((server) => {
   server.tool(
     "get_goals",
-    "Get all current gaols with their descriptions and progress",
+    "Retrieve a list of all current goals with summaries, including percent complete and descriptions. Use this to get a high-level view before selecting a goal to drill into with get_goal.",
     {},
     async () => {
       const goals = await prisma.goal.findMany({
@@ -33,7 +33,7 @@ const handler = createMcpHandler((server) => {
 
   server.tool(
     "list_goals_by_id",
-    "List all goals with their IDs",
+    "Get a compact list of all goal IDs and titles. Use this to identify a goal when you need to call tools like get_goal or log_action which require a goal ID.",
     {},
     async () => {
       const goals = await prisma.goal.findMany({
@@ -52,7 +52,7 @@ const handler = createMcpHandler((server) => {
 
   server.tool(
     "log_action",
-    "Log a note or progress update for a specific goal.",
+    "Log a progress update or activity note related to a goal by ID. Use this to track work or meetings. Combine with get_goal to view the latest state and get_logs to see recent entries.",
     {
       goalId: z.string(),
       text: z.string(),
@@ -75,7 +75,7 @@ const handler = createMcpHandler((server) => {
 
   server.tool(
     "get_goal",
-    "Get details for a specific goal by ID",
+    "Retrieve detailed information about a specific goal, including actions, deliverables, and logs. Use the goal ID from get_goals or list_goals_by_id.",
     {
       goalId: z.string(),
     },
@@ -121,7 +121,7 @@ const handler = createMcpHandler((server) => {
 
   server.tool(
     "get_logs",
-    "View recent actions across all goals",
+    "Retrieve the 10 most recent log entries across all goals. Use this for a quick view of recent progress or to verify that log_action was successful.\n",
     {},
     async () => {
       const logs = await prisma.actionLog.findMany({
